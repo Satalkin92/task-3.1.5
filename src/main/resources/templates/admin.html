@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <title>Admin panel</title>
+</head>
+<header class="header" style="background-color: #404040">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-6 text-white" id="adminName">
+                <div class="d-flex justify-content-start ">
+                    <h5></h5>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="d-flex justify-content-end">
+                    <form th:action="@{/logout}" method="post">
+                        <input type="submit" class="btn text-white-50 btn-lg btn-sm"
+                               style="background-color: #404040"  value="Logout">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-2 vh-100">
+            <a href="/admin">Admin</a>
+            <br>
+            <a href="/user">User</a>
+        </div>
+        <div class="col-10" style="background-color: #F9F8F8">
+            <div class="col">
+                <h3>Admin panel</h3>
+                <!--                Панель вкладок-->
+                <div class="container mt-5">
+                    <ul class="nav nav-tabs mt-5">
+                        <li class="nav-item"><a href="#allUsers" class="nav-link active"
+                                                data-bs-toggle="tab">All users</a></li>
+                        <li class="nav-item"><a href="#new" class="nav-link" id="buttonNewUser"
+                                                data-bs-toggle="tab">New user</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <!--                    Первая вкладка-->
+                        <div class="tab-pane fade show active" id="allUsers">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>
+                                        <h5>All users</h5>
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
+                                    <th>Age</th>
+                                    <th>Username</th>
+                                    <th>Role</th>
+                                    <th>Edit</th>
+                                    <th>Delete</th>
+                                </tr>
+                                </thead>
+                                <tbody id="tbody"></tbody>
+                            </table>
+                        </div>
+                <!--                                            Модальное окно-->
+                        <div class="modal" id="modalDelete" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="deleteModalLabel"></h5>
+                                        <button type="button" id = "modalCLose" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form name="userDeleteForm" id="userDeleteForm" class="add-post-form">
+                                            <div class="form-group">
+                                                <div class="col-sm-6 container text-center"><b>Username:</b></div>
+                                                <input type="text" readonly class="form-control" name="username"/>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="col-sm-6 container text-center"><b>First name:</b></div>
+                                                <input type="text" readonly class="form-control" name="firstName"/>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="col-sm-6 container text-center"><b>Last name:</b></div>
+                                                <input type="text" readonly class="form-control" name="lastName"/>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="col-sm-6 container text-center"><b>Age:</b></div>
+                                                <input type="number" readonly class="form-control" name="age"/>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="col-sm-6 container text-center"><b>Password:</b></div>
+                                                <input type="hidden" readonly class="form-control" name="password"/>
+                                            </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-danger btn-sm" id="submit1">Delete user</button>
+                                        <button type="button" class="btn btn-secondary btn-sm" id = "btnDeleteClose" data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                    </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal" id="modalEdit" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="editModalLabel"></h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form id="userEditForm" name="userEditForm" class="add-post-form">
+                                            <div class="form-group">
+                                                <div class="col-sm-6 container text-center"><b>Username:</b></div>
+                                                <input type="text" class="form-control" name="usernameEdit"/>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="col-sm-6 container text-center"><b>First name:</b></div>
+                                                <input type="text" class="form-control" name="firstNameEdit"/>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="col-sm-6 container text-center"><b>Last name:</b></div>
+                                                <input type="text" class="form-control" name="lastNameEdit"/>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="col-sm-6 container text-center"><b>Age:</b></div>
+                                                <input type="number" class="form-control" name="ageEdit"/>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="col-sm-6 container text-center"><b>Password:</b></div>
+                                                <input type="hidden" readonly class="form-control" name="passwordEdit"/>
+                                            </div>
+                                            <div class="col-sm-6 container text-center"><b>Roles:</b></div>
+                                            <select class="form-select" multiple aria-label id="roles">
+                                                <option value="admin" selected>ROLE_ADMIN</option>
+                                                <option value="user">ROLE_USER</option>
+                                            </select>
+                                            <div class="modal-footer">
+                                                <button type="submit" class="btn btn-info btn-sm" id="submitFormEdit">Edit user</button>
+                                                <button type="button" class="btn btn-secondary btn-sm" id="btnEditClose" data-bs-dismiss="modal">Close</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                <!--                        Вторая вкладка-->
+                <div class="tab-pane fade" id="new">
+                    <table class="table table-bordered table-striped">
+                        <tbody>
+                        <tr>
+                            <th>
+                                <h5>Add new user</h5>
+                            </th>
+                        </tr>
+                        <td colspan="1">
+                            <table class="table table-striped">
+                                <tr>
+                                    <div class="row justify-content-center">
+                                        <div class="col-4 text-center">
+                                            <form id="userForm" class="add-post-form">
+                                                <div class="form-group">
+                                                    <div class="col-sm-6 container text-center"><b>Username:</b></div>
+                                                    <input type="text" class="form-control" name="usernameNewUser"/>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="col-sm-6 container text-center"><b>First name:</b></div>
+                                                    <input type="text" class="form-control" name="firstNameNewUser"/>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="col-sm-6 container text-center"><b>Last name:</b></div>
+                                                    <input type="text" class="form-control" name="lastNameNewUser"/>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="col-sm-6 container text-center"><b>Age:</b></div>
+                                                    <input type="number" class="form-control" name="ageNewUser"/>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="col-sm-6 container text-center"><b>Password:</b></div>
+                                                    <input type="text" class="form-control" name="passwordNewUser"/>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="col-sm-6 container text-center"><b>Roles:</b></div>
+                                                    <select class="form-select" multiple aria-label id="rolesNewUser">
+                                                        <option value="admin" selected>ROLE_ADMIN</option>
+                                                        <option value="user">ROLE_USER</option>
+                                                    </select>
+                                                </div>
+                                                <button type="submit" class="btn btn-primary" id="submit">Add new user
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </tr>
+                            </table>
+                        </td>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+<script src="/admin.js"></script>
+</body>
+</html>
