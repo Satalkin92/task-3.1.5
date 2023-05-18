@@ -1,6 +1,7 @@
 package ru.kata.spring.boot_security.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.UserService;
@@ -20,8 +21,8 @@ public class UserController {
     }
 
     @GetMapping("/")
-    public User userPrincipal(Principal principal) {
-        return userService.findUserByUsername(principal.getName()).orElseThrow(FindException::new);
+    public ResponseEntity<User> userPrincipal(Principal principal) {
+        return ResponseEntity.ok(userService.findUserByUsername(principal.getName()).orElseThrow(FindException::new));
     }
 
 }

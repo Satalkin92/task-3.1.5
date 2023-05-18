@@ -24,13 +24,13 @@ public class AdminController {
     }
 
     @GetMapping("/")
-    public List<User> printUsers() {
-        return userService.getUsers();
+    public ResponseEntity<List<User>> printUsers() {
+        return ResponseEntity.ok(userService.getUsers());
     }
 
     @GetMapping("/{id}")
-    public User getUser(@PathVariable("id") Long id) {
-        return userService.getUser(id);
+    public ResponseEntity<User> getUser(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(userService.getUser(id));
     }
 
     @PostMapping("/")
@@ -60,8 +60,8 @@ public class AdminController {
     }
 
     @GetMapping("/get")
-    public User adminPrincipal(Principal principal) {
-        return userService.findUserByUsername(principal.getName()).orElseThrow(FindException::new);
+    public ResponseEntity<User> adminPrincipal(Principal principal) {
+        return ResponseEntity.ok(userService.findUserByUsername(principal.getName()).orElseThrow(FindException::new));
     }
 
 }
